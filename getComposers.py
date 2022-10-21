@@ -2,6 +2,7 @@ from typing import Tuple, Union
 import re
 
 import wikipediaapi
+from unidecode import unidecode
 
 '''
 this string may match:
@@ -110,6 +111,7 @@ def get_all_composers():
             composer_strings = sec.text.split("\n")
             section_prefix = sec.title
             for composer_string in composer_strings:
+                composer_string = unidecode(composer_string)
                 try:
                     first_name, second_name = get_first_second_name(composer_string, section_prefix)
                     geburts_jahr, todesjahr = get_geburts_todes_jahr(composer_string)
