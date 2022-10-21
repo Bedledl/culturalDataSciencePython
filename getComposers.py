@@ -23,13 +23,14 @@ DATES_REGEXES = [
 
 
 class Composer:
-    def __init__(self, first_name: str, last_name: str, geburtsjahr, todesjahr):
+    def __init__(self, first_name: str, last_name: str, geburtsjahr, todesjahr, original_string=""):
         if not last_name:
-            raise ValueError("No last name is given.")
+            raise ValueError(f"No last name is given {original_string}.")
         self.first_name = first_name
         self.last_name = last_name
         self.geburtsjahr = geburtsjahr
         self.todesjahr = todesjahr
+        self.original_str = original_string
 
     def __str__(self):
         return f"Last_Name{self.last_name} FirstName: {self.first_name} {self.geburtsjahr} {self.todesjahr}"
