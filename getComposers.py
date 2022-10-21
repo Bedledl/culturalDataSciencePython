@@ -113,9 +113,18 @@ def get_all_composers():
             for composer_string in composer_strings:
                 composer_string = unidecode(composer_string)
                 try:
-                    first_name, second_name = get_first_second_name(composer_string, section_prefix)
-                    geburts_jahr, todesjahr = get_geburts_todes_jahr(composer_string)
-                    composers.append(Composer(first_name, second_name, geburts_jahr, todesjahr))
+                    open_bracket_index = composer_string.index("(")
+                    closed_bracket_index = composer_string.index(")")
+                    if open_bracket_index < 0 or closed_bracket_index < 0:
+                        raise ValueError(f"No brackets found in {composer_string}.")
+
+                    first_name, second_name = get_first_second_name(
+                                composer_string[:open_bracket_index - 1], section_prefix[:2])
+                    geburts_jahr, todesjahr = get_geburts_todes_jahr(
+                        composer_string[open_bracket_index + 1: closed_bracket_index])
+                    composers.append(
+                        Composer(first_name, second_name, geburts_jahr, todesjahr, composer_string)
+                    )
                 except ValueError as excp:
                     print(excp)
 
