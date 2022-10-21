@@ -1,6 +1,25 @@
 from typing import Tuple, Union
+import re
 
 import wikipediaapi
+
+'''
+this string may match:
+um 1697 – um 1759
+1713?–1781
+* um 1500; † um 1561
+'''
+DATUM_BIRTH_REGEX = "\s*(um|~|vor|nach|≈)?\s*(?P<birth>\d{4,4})(\?)?"
+DATUM_DEATH_REGEX = "\s*(um|~|vor|nach|≈)?\s*(?P<death>\d{4,4})(\?)?"
+
+DATES_REGEXES = [
+    re.compile(f"{DATUM_BIRTH_REGEX}((\s*-\s*)|(\s*bis\s*)|\s*–\s*){DATUM_DEATH_REGEX}"),
+    re.compile(f"{DATUM_BIRTH_REGEX}; †\s*{DATUM_DEATH_REGEX}"),
+    re.compile(f"\*\s*{DATUM_BIRTH_REGEX}"),
+    re.compile(f"†\s*{DATUM_DEATH_REGEX}"),
+    re.compile(DATUM_BIRTH_REGEX)
+]
+
 
 
 class Composer:
