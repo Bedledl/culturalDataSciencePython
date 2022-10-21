@@ -63,31 +63,38 @@ def get_first_second_name(composer_str: str, prefix_second_name) -> Tuple[str, s
 
     return " ".join(first_names), " ".join(second_names)
 
-def get_geburts_todes_jahr(composer_str: str) -> Tuple[int, Union[int, None]]:
-    def extract_digits(string: str, count_digits: int):
-        digits_str = "".join([letter for letter in string if letter.isdigit()])
-        if len(digits_str) != count_digits:
-            raise ValueError(f"Composer String does not contain a Birth und Deathjahr {composer_str}({digits_str})")
 
-        return digits_str
+def get_geburts_todes_jahr(composer_str: str) -> Tuple[Union[int, None], Union[int, None]]:
+    '''
 
-    start = composer_str.index("(")
-    end = composer_str.index(")")
-    first_digit = composer_str[start + 1]
-    if first_digit == "*":
-        birth_year = extract_digits(composer_str[start+3:], 4)
-        return int(birth_year), None
-    elif first_digit == "†":
-        death_year = extract_digits(composer_str[start+3:], 4)
-        return None, int(death_year)
+    :param composer_str: should ony contain the date part without brackets
+    :return: Tuple of birth and death year
+    '''
+    birth, death = None, None
+    for date_regex in DATES_REGEXES:
+        m = date_regex.search(composer_str)
+        if not m:
+            continue
 
-    jahre_str = composer_str[start+1: end]
-    jahre_str = extract_digits(jahre_str, 8)
+        try:
+            birth = m.group("birth")
+        except IndexError:
+            pass
+        if birth:
+            birth = int(birth)
+        try:
+            death = m.group("death")
+        except IndexError:
+            pass
+        if death:
+            death = int(death)
 
-    if len(jahre_str) != 8:
-        raise ValueError(f"Composer String does not contain a Birth und Deathjahr {composer_str}")
+        return birth, death
 
-    return int(jahre_str[:4]), int(jahre_str[4:])
+    if not (birth or death):
+        raise ValueError(f"Composer String does not contain a Birth und Deathyear {composer_str}")
+
+    return birth, death
 
 
 def get_all_composers():
