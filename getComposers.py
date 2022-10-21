@@ -133,3 +133,9 @@ def get_all_composers():
 
 def get_composer_from_country():
     pass
+
+def test_get_composer(func):
+    for composer in func():
+        print(str(composer))
+
+test_get_composer(get_all_composers)
