@@ -36,24 +36,32 @@ class Composer:
 
 
 def get_first_second_name(composer_str: str, prefix_second_name) -> Tuple[str, str]:
-    first_names = []
-    second_names = []
-    first_name_current = True
+    '''
+
+    :param composer_str: should only contain the name part
+    :param prefix_second_name: raw prefix for thhe current section
+    :return: Tuple of other and second name
+    '''
+    first_names, second_names = [], []
+    second_name_current = True
+
     str_split = composer_str.split()
+    str_split.reverse()
+
     for split_str in str_split:
-        if split_str.startswith(prefix_second_name):
-            first_name_current = False
+        if second_name_current:
+            if split_str.startswith(prefix_second_name):
+                second_names.append(split_str)
+                second_name_current = False
 
-        elif split_str.startswith("("):
-            return " ".join(first_names), " ".join(second_names)
-
-        if first_name_current:
-            first_names.append(split_str)
         else:
-            second_names.append(split_str)
+            first_names.append(split_str)
+
+    if not second_names:
+        print(f"No second name found in {composer_str} with prefix {prefix_second_name}")
+        ValueError(f"No second name found in {composer_str} with prefix {prefix_second_name}")
 
     return " ".join(first_names), " ".join(second_names)
-
 
 def get_geburts_todes_jahr(composer_str: str) -> Tuple[int, Union[int, None]]:
     def extract_digits(string: str, count_digits: int):
