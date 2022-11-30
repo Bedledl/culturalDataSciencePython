@@ -129,17 +129,15 @@ def store_books(dpi=93, language="deu"):
         textfile.close()
         print(f"Finished {book.name} at {datetime.datetime.now()}")
 
-    amz_years_from_to = (3, 9)
+    amz_years_from_to = (17, 24)
     books = []
 
     for number in range(*amz_years_from_to):
         b = Book(PDF_DATA_DIR + f"amzband{number}.pdf", f"AMZ{number}")
         books.append(b)
 
-    with futures.ThreadPoolExecutor(max_workers=5) as executor:
-        futures_results = executor.map(store_booktest_in_file, books)
-        for future in futures.as_completed(futures_results):
-            print(future)
+    with futures.ThreadPoolExecutor(max_workers=3) as executor:
+        executor.map(store_booktest_in_file, books)
 
 
 def compare_trainings_models():

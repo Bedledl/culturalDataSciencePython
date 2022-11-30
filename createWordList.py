@@ -134,6 +134,62 @@ def test_envrionment_of_componsit():
         print(e)
 
 
+def write_bucket_file(input_data: List[List[str]], output_file: str):
+    '''
+    creates bucket file for e.g. Apriori Analysis
+    '''
+    bucket_file = open(output_file, "w")
+    bucket_file.writelines([",".join(line) + "\n" for line in input_data])
+    bucket_file.close()
+
+
+def get_transaction_from_section(section: str, composers: List[Composer]) -> List[str]:
+    transaction = set()
+
+    line_words = section.split()
+
+    for word in line_words:
+
+        for composer in composers:
+            cmp = composer.match(word)
+            if cmp == 0:
+                transaction.add(composer.last_name)
+            elif cmp > 0:
+                break
+
+    return list(transaction)
+
+
+def get_buckets_from_file(input_file: str, output_file: str, composers: List[Composer]):
+    transactions = []
+
+    with open(input_file, "r") as file:
+        text = file.read()
+
+    offset = 0
+    while index := text.find("\n\n", offset):
+        if index == -1:
+            section = text[offset:]
+        else:
+            section = text[offset:index]
+            offset = index + 2
+
+        print(section)
+
+        transaction = get_transaction_from_section(section, composers)
+        if transaction:
+            transactions.append(transaction)
+
+        if index == -1:
+            break
+
+    print(transactions)
+
+    write_bucket_file(transactions, output_file)
+
+
+
+
 #test_envrionment_of_componsit()
 #reate_frequency_file(get_composers_sorted(), input_files, output_file)
 
