@@ -1,0 +1,70 @@
+\documentclass{beamer}
+\usepackage[utf8x]{inputenc}
+\usetheme{default}
+
+\title{this is the title}
+\author{Bettina Riedl}
+\begin{document}
+\begin{frame}[plain]
+    \maketitle
+\end{frame}
+\begin{frame}{Idee}
+	Historische musikalische Zeitschrift analysieren
+	"hidden gems" finden
+	Spotify Api für verlgeichsdaten
+	Wikipedia "Liste klassischer Komponisten" als Stichwortverzeichnis
+	Musikelische Zeitung deckt Zeit des Bidermeiers/Frühromantik bis Spätromantik -> nachvollziehung der Entwicklung der Popuiarität einzelner Künstler
+	Welche Künstler werden oft zusammen genannt?
+\end{frame}
+\begin{frame}{Allgemeine Musikalische Zeitung}
+	Zeitung von 1799 bis 1850 in Leipzip herausgegeben 
+	scans sind u.a. von google zu finden
+\end{frame}
+\begin{frame}{Aufgaben}
+	(akls baumdiagramm darstellen)
+	Preprocessing
+	Scans -> Texterkennung->Text
+	Text->  Natural Language Processing, Named Entitiy Recognition-> Entities
+	
+	Wikipedia->Liste von Komonisten -> Named Entity Recognition(hier aber ein simpler Fall, einfaches Parsing ist genug)
+	
+	Spotify -> Spotify Api
+	
+	Entities = (Liste von Komponisten x Spotify Api ) x Entites von AMZ
+
+	Entities->Datensatz(Komma sperated file, mit Jahresinformationen)
+	Datensatz->Data Mining -> Präsentation
+\end{frame}
+\begin{frame}{Wikipedia Liste von Komponisten}
+	Wikipedia Api Lib onv Python
+	Parsing von Geburstdaten, Regex und Regex Verbessserung durch Qualitative Analyse
+	Mögliche Verbesserung: Lücken des Regex schließen
+\end{frame}
+\begin{frame}{Spotify Api}
+	Spoipy Api Python Bibliothek 
+\end{frame}
+\begin{frame}{Composer Klasse}
+	
+\end{frame}
+\begin{frame}{Preprocessing von AMZ Scanns}
+	unpaper? binarization schon von google vorgenommen
+	google header entfernen
+\end{frame}
+\begin{frame}{Tesseract}
+Texterkennung
+
+hier Fotos von Ergebnissen
+Model trainiert, ist aber sehr aufwendig Trainingsdaten zu erstellen
+Beispiel für Trainigsdatum: bild von einzelner Zeile aus Scan und Datei mit Text dazu
+\end{frame}
+\begin{Named Entity Recogition}
+	Fragestellung: Wie erkenne ich automatisiert, dass ein Komponist aus meiner Komponistenliste hier genannt wurde?
+	Probleme:
+	Was ist wenn ein Hidden Gem so hidden ist, dass er gar nicht in der Liste der Komponisten in Wikipedia vorkommt?
+	
+\end{Named Entity Recogition}
+\begin{frame}{spaCy}
+	
+\end{frame}
+
+\end{document}
