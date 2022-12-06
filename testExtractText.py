@@ -30,7 +30,7 @@ class Page:
         if self.__numpy_array is not None:
             numpy_arr = self.__numpy_array
         else:
-            numpy_arr = self.get_numpy_array(dpi, language)
+            numpy_arr = self.get_numpy_array(dpi)
         img_rgb = cv2.cvtColor(numpy_arr, cv2.COLOR_BGR2RGB)
         return pytesseract.image_to_string(img_rgb, lang=language)
 
@@ -72,7 +72,7 @@ class Book:
 
     def get_text_from_page(self, page_nr, dpi=93, language="deu"):
         p = Page(self.__pdf_path, page_nr)
-        return p.generate_text_tesseract(language)
+        return p.generate_text_tesseract(dpi, language)
 
     def get_text_from_page_optimized(self, page_nr, dpi=93, language="deu"):
         p = Page(self.__pdf_path, page_nr)
@@ -160,7 +160,7 @@ def compare_trainings_models():
 def get_test_page(dpi=93, language="deu"):
     b = Book(PDF_DATA_DIR + f"amzband1.pdf", f"AMZ1")
     print("Generating page :")
-    return b.get_text_from_page(202, dpi, language)
+    return b.get_text_from_page(203, dpi, language)
 
 
 def get_test_pages(dpi=93, language="deu"):
@@ -174,8 +174,14 @@ def print_test_page(dpi=93, language="deu"):
 
 
 def compare_two_mlmodels_for_text():
-    text1 = get_test_page(400, language="amz-trained").split("\n")
+    text1 = get_test_page(400, language="deu").split("\n")
+    #text1 = get_test_page(400, language="amz-trained").split("\n")
     text2 = get_test_page(400, language="amz-trained2").split("\n")
+
+    print(text1)
+    print("text2:")
+    print(text2)
+    print("tex finish")
 
     max_line_len = max([len(line) for line in text1 + text2]) + 1
 
@@ -184,5 +190,5 @@ def compare_two_mlmodels_for_text():
         fill_up2 = int(max_line_len - len(l2))*' '
         print(l1 + fill_up1 + l2 + fill_up2)
 
-
-store_books(dpi=400, language="amz-trained2")
+compare_two_mlmodels_for_text()
+#store_books(dpi=400, language="amz-trained2")
