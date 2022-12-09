@@ -129,14 +129,14 @@ def store_books(dpi=93, language="deu"):
         textfile.close()
         print(f"Finished {book.name} at {datetime.datetime.now()}")
 
-    amz_years_from_to = (17, 24)
+    amz_years_from_to = (48, 51)
     books = []
 
     for number in range(*amz_years_from_to):
         b = Book(PDF_DATA_DIR + f"amzband{number}.pdf", f"AMZ{number}")
         books.append(b)
 
-    with futures.ThreadPoolExecutor(max_workers=3) as executor:
+    with futures.ThreadPoolExecutor(max_workers=2) as executor:
         executor.map(store_booktest_in_file, books)
 
 
@@ -190,5 +190,5 @@ def compare_two_mlmodels_for_text():
         fill_up2 = int(max_line_len - len(l2))*' '
         print(l1 + fill_up1 + l2 + fill_up2)
 
-compare_two_mlmodels_for_text()
-#store_books(dpi=400, language="amz-trained2")
+#compare_two_mlmodels_for_text()
+store_books(dpi=400, language="amz-trained2")
