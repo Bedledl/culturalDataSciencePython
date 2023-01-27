@@ -10,6 +10,7 @@ import pytesseract
 import cv2
 import pdf2image
 import numpy
+from Levenshtein import ratio
 from PyPDF2 import PdfFileReader
 from os.path import isfile
 
@@ -70,7 +71,7 @@ class Book:
     def pages(self):
         return self.__pages
 
-    def get_text_from_page(self, page_nr, dpi=93, language="deu"):
+    def get_text_from_page(self, page_nr, dpi=400, language="deu"):
         p = Page(self.__pdf_path, page_nr)
         return p.generate_text_tesseract(dpi, language)
 
@@ -79,7 +80,7 @@ class Book:
 #        p.binarization_threshold()
         return p.generate_text_tesseract(language)
 
-    def get_text_from_pages(self, start, end, dpi=93, language="deu"):
+    def get_text_from_pages(self, start, end, dpi=400, language="deu"):
         images = pdf2image.convert_from_path(self.__pdf_path,
                                              dpi=dpi,
                                              first_page=start,
@@ -118,7 +119,7 @@ class Book:
         return text
 
 
-def store_books(dpi=93, language="deu"):
+def store_books(dpi=450, language="deu"):
     def store_booktest_in_file(book):
         print(f"Starting to read and store {book.name} at {datetime.datetime.now()} with {book.pages} Pages")
 
@@ -129,11 +130,11 @@ def store_books(dpi=93, language="deu"):
         textfile.close()
         print(f"Finished {book.name} at {datetime.datetime.now()}")
 
-    amz_years_from_to = (48, 51)
+    amz_years_from_to = (15, 51)
     books = []
 
     for number in range(*amz_years_from_to):
-        b = Book(PDF_DATA_DIR + f"amzband{number}.pdf", f"AMZ{number}")
+        b = Book(PDF_DATA_DIR + f"amzband{number}.pdf", f"AMZ_wmodel{number}")
         books.append(b)
 
     with futures.ThreadPoolExecutor(max_workers=2) as executor:
@@ -176,6 +177,8 @@ def print_test_page(dpi=93, language="deu"):
 def compare_two_mlmodels_for_text():
     text1 = get_test_page(400, language="deu").split("\n")
     #text1 = get_test_page(400, language="amz-trained").split("\n")
+    text2 = get_test_page(400, language="amz-trained2")
+    print(text2)
     text2 = get_test_page(400, language="amz-trained2").split("\n")
 
     print(text1)
@@ -191,4 +194,30 @@ def compare_two_mlmodels_for_text():
         print(l1 + fill_up1 + l2 + fill_up2)
 
 #compare_two_mlmodels_for_text()
-store_books(dpi=400, language="amz-trained2")
+store_books(dpi=400, language="amz-weisthuemer-combined")
+
+
+def test_model(model: str):
+    text = get_test_page(400, language=model)
+    with open("data/check_data/check_text.txt", "r") as file:
+        check_text = file.read()
+
+    return ratio(text, check_text)
+
+#print(f"deu modell: {test_model('deu')}")
+#print(f"amztrained2 modell: {test_model('amz-trained2')}")
+#print(f"amztrained modell: {test_model('amz-trained')}")
+#print(f"first modell: {test_model('first-test')}")
+#print(f"second modell: {test_model('second-test')}")
+#print(f"weistuemer erster versucht: {test_model('weisthuemer1_2_added')}")
+#print(f"weisthuemer auf deu: {test_model('weisthuemer1_2_new')}")
+#print(f"amz-weisthuemer-combined: {test_model('amz-weisthuemer-combined')}")
+
+
+#print(get_test_page(400, language='amz-weisthuemer-combined'))
+
+
+# weisthuemer1-2 added: erster versucht weisthumer auf amz-trained zu adden
+#amztrained ist das beste aus deu amztrained, maztrained2, first und second test
+# weisthuemer 1-2 new: weisthuemer auf deu
+#weisthuemer_amz: amz gt auf weisthiemer 1-2 new

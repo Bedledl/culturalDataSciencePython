@@ -1,4 +1,4 @@
-\documentclass{beamer}
+\documentclass[aspectratio=169]{beamer}
 %\documentclass[notes=only]{beamer}
 \usepackage[utf8x]{inputenc}
 \usepackage[ngerman]{babel}
@@ -7,7 +7,8 @@
 \usepackage{listings}
 \usepackage{chronology}
 
-\title{Analyse einer historischen Musikzeitung}
+\subtitle{Analyse einer historischen Musikzeitung}
+\title{Cultural Data Science: Zwischenpräsentation}
 \author{Bettina Riedl}
 \begin{document}
 \begin{frame}[plain]
@@ -17,18 +18,20 @@
 \begin{frame}{Idee: klassische Musik}
 	\begin{itemize}
 		\pause
-		\item Vorteil: Quellen ohne Copyright
+		 \item Textanalyse
 		\pause
 		\item historische, musikalische Zeitschrift analysieren
 		\pause
-		\item Spotify Api für Verlgeichsdaten aus der Gegenwart
+		\item Vorteil: Quellen mit abgelaufenem Copyright
+		\pause
+		\item Spotify Api für Vergleichsdaten aus der Gegenwart
 		\pause
 		\item Wikipedia \glqq Liste klassischer Komponisten\grqq als Schlagwortverzeichnis
 	\end{itemize}
 \begin{block}{Fragestellungen}
 	\begin{itemize}
-		\item Welche Komponisten werden überproportional oft genannt?
-		\item Welche Komponisten, die zu bestimmten Zeiten berühmt waren, sind heutzutage nicht mehr populär?
+		\item Korrelation zwischen Häufigkeit eines Komponisten in Zeitschrift vs. Spotify Popularität
+		\item Welche Komponisten waren zu welchen Zeiten die populärsten?
 		\item Welche Komponisten werden oft in einem Absatz zusammen genannt?
 	\end{itemize}
 \end{block}
@@ -39,11 +42,18 @@
 \begin{frame}{Allgemeine Musikalische Zeitung}
 	\begin{itemize}
 		\item wöchentliche Zeitschrift
-		\item erschienen 1798–1848 und 1863-1882,  meist im Verlag \glqq Breitkopf \& Härtel Verlag\grqq
+		\item erschienen im Verlag \glqq Breitkopf \& Härtel Verlag\grqq, Leipzig
+		\item 1798–1848 und 1863-1882,  
 		\item vollständige, hochqualitative Scans einer Jahresauflage auf Google Books downloadbar
 		\item 1 Band $\widehat{=}$ 52 Ausgaben $\approx$ 500 Seiten\\
 		70 Bände $\approx$ 35 000 Seiten
-		\item Inhalt: Rezensionen, Anekdoten
+		\item Inhalt: 
+		\begin{itemize}
+			\item musiktheoretische Abhandlungen
+			\item Rezensionen
+			\item Anekdoten
+			\item Anzeigen über neue Drucke des Verlags
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 \note{
@@ -114,7 +124,7 @@
 \end{frame}
 \begin{frame}
 	\begin{itemize}
-		\item durch \glqq musikalische Leistung, theoretische Betrachtung und polemische Erörterung" Struktur in verschiedenen Strömungen
+		\item durch \glqq musikalische Leistung, theoretische Betrachtung und polemische Erörterung\grqq Struktur in verschiedenen Strömungen
 		\item geschichtliche, ernste, teilweise fast philosophische Auseinandersetzungen als Themen der Musik
 		\item \glqq frische Kräfte für die Ausführung einer allgemeinen musikalischen Zeitung\grqq
 		\item Unfähigkeit von einem \glqq freien Standpunkt\grqq über gegenwärtige Musik zu urteilen
@@ -123,7 +133,8 @@
 \begin{frame}{Weitere Fragestellungen}
 	  	\begin{itemize}
 	  		\item Wie gehen die älteren Ausgaben und jüngere Ausgaben mit ihrer gegenwärtigen Musik um?
-	  		\item Ausreißer analysieren: Korellation mit  Veröffentlichung berühmter Werke(z.B. durch Spotify Popularität ermittelt)
+	  		\item Welche Künstler haben eine gleichbleibende Popularität in der AMZ? Welche werden mit der Zeit immer populärer?
+	  		\item Gab es für berühmte Künstler \glqq Durchbruch\grqq Jahre?
 	  		
 	  	\end{itemize}
 \end{frame}
@@ -259,16 +270,6 @@
 	
 	unpaper? binarization schon von google vorgenommen
 	google header entfernen}
-\begin{frame}{Preprocessing von AMZ Scanns: Binarisierung und Rauschunterdrückung}
-	\begin{itemize}
-		\item Google Scans sind vorverarbeitet
-		\item unpaper: Kommandozeilenprogramm zum Post-Processing
-	\end{itemize}
-\end{frame}
- \note[itemize]{
-\item unpaper scannt eine Seite nach einem Testblock und reduziert dann das Rauschen um diesen Textblock und richtet ihn gerade aus
-\item unpaper hat bei mir nicht gut funktioniert, trotz ausprobieren unterscheidlicher einstellungen
-}
 \begin{frame}{Texterkennung: Tesseract}
 \begin{itemize}
 		\item Bibliothek fürTexterkennung(engl. optical character recognition, OCR)
@@ -325,7 +326,7 @@
 	\end{block}
 
 \end{frame}
-\begin{frame}{Ergebnis einer trivialen NER}
+\begin{frame}{Ergebnis einer intuitiven NER}
 	Ge\\
 	Re\\
 	He\\
@@ -370,30 +371,79 @@
 	\end{itemize}
 \begin{block}{Probleme}
 	\begin{itemize}
-	\item altdeutsche Rechtschreibung(?)
+	\item altdeutsche Rechtschreibung
 	\item Formatierung
 	\item[$\rightarrow $ ] viele falsch Negative und einige falsch Positive
+	\item Matching der gefundenen \glqq PERSON Entities\grqq mit Komponisten
 	\end{itemize}
 \end{block}
 \end{frame}
-\begin{frame}{Schnittstellen}
-	\begin{itemize}
-		\item Python Modul \glqq pickle\grqq  zum persistieren von Objekten
-		\item Schnittstellenformat zu R: Comma Seperated Values
-	\end{itemize}
+\begin{frame}{Beispiele für gefundene \glqq PERSON Entities\grqq}
+	W.G. Mozarts\\
+	Friedrich Roehlitz.\\
+	Mozarts\\
+	Johann Friedrich Bärwald.\\
+	Henry Carey.\\
+	F IV\\
+	Lolly.\\
+	Aug. Eberh.\\
+	J. G.\\
+	Begräbnissfeyer\\
+	Friedrich Wilhelms des zweyten.\\
+\end{frame}
+\begin{frame}{Matching durch Minimierung der Levenshtein Distanz}
+	\fontsize{9pt}{10pt}\selectfont
+	\begin{tabular}{l | l}
+		W.G. Mozarts  & franz xaver wolfgang Mozart\\
+		Friedrich Roehlitz. & giuseppe Fedeli\\
+		Mozarts & franz xaver wolfgang Mozart\\
+		Johann Friedrich Bärwald. & franz Berwald\\
+		Henry Carey. & friedrich Hegar\\
+		F IV & francesco Feo\\
+		Lolly. & antonio Lolli\\
+		Aug. Eberh. & jacques Aubert\\
+		J. G. & johann Jeep\\
+		Begräbnissfeyer & nicolas Bernier\\
+		Friedrich Wilhelms des zweyten. & emmanuel Adriaenssen\\
+	\end{tabular}
+\end{frame}
+\begin{frame}{Matching durch Maximierung der indel-Ähnlichkeit}
+	\fontsize{9pt}{10pt}\selectfont
+	\begin{tabular}{l|l}
+		W.G. ozarts & franz xaver wolfgang Mozart\\
+		Friedrich Roehlitz. & daniel Friderici\\
+		Mozarts & franz xaver wolfgang Mozart\\
+		Johann Friedrich Bärwald. & N/A \\
+		Henry Carey. & N/A \\
+		F IV & N/A \\
+		Lolly. & antonio Lolli\\
+		Aug. Eberh. & jacques Aubert\\
+		J. G. & N/A \\
+		Begräbnissfeyer & nicolas Bernier\\
+		Friedrich Wilhelms des zweyten. & N/A \\
+		Gallas & jean Gilles\\
+	\end{tabular}
 \end{frame}
 \begin{frame}{Data Mining}
 	\begin{itemize}
-		content...
+		\item Frequent Pattern Analysis: welche Komponisten werden oft in einem Absatz zusammen genannt?
+		\item Popularitätsvektoren: Approximation, Clusteranalyse
+		\item Vergleich mit Spotify Popularität: Korrelationsanalyse
 	\end{itemize}
 \end{frame}
 \begin{frame}{Nächste Schritte}
 	\begin{itemize}
+		\item Verbesserung des Matching von Namen mit gefundenen Entites
 		\item Konzentration auf Inhaltsverzeichnis oder Register
+		\item Korrektur der Rechtschreibung
 		\item tesseract trainieren: altdeutsche Rechtschreibung, Umlaute, Zahlen
-		\item spaCy trainieren: altdeutsche Rechtschreibung, konkrete Beipsiele aus extrahiertem Text
-		\item 
-
+		\item spaCy trainieren: altdeutsche Rechtschreibung, konkrete Beispiele aus extrahiertem Text
 	\end{itemize}
+\end{frame}
+\begin{frame}{Erste kleine Ergebnisse}
+	\includegraphics[scale=.34]{"data/mostFrequentComposers.jpeg"}
+\end{frame}
+\begin{frame}{Erste kleine Ergebnisse(gefiltert)}
+	\includegraphics[scale=.34]{"data/mostFrequentComposers2.jpeg"}
 \end{frame}
 \end{document}

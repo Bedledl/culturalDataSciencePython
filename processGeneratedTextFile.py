@@ -14,9 +14,21 @@ from Log import log
 def strip_google_header(text: str) -> str:
     return text[SIZE_GOOGLE_HEADER:]
 
+substitute = {
+    "(?P<stabe>\w)-\n": "\g<stabe>",
+    "(\n[^a-zA-Z]*)\n": "\n",
+    "\n\n": "\n",
+    "\n\w{0,3}\n": "\n",
+    "(?P<notDot>[^\.])\n(?P<under>[^A-Z])": "\g<notDot> \g<under>"
+#    "[^\.]\n": " "
+}
+
 
 def zeilenumbrueche_entfernen(text: str) -> str:
-    return re.sub("-\n", " ", text)
+    for s, ss in substitute.items():
+        text = re.sub(s, ss, text)
+
+    return text
 
 
 def preprocess_text_file(input_text_file, output_text_file):
@@ -31,7 +43,7 @@ def preprocess_text_file(input_text_file, output_text_file):
             file.write(text)
 
 
-def preprocess_text(text: str):
-    text = strip_google_header(text)
-    text = unidecode_except_german_umlaute(text)
-    text = zeilenumbrueche_entfernen(text)
+for number in range(1, 51):
+    preprocess_text_file(f"AMZ_wmodel{number}.txt", f"AMZ_wmodel{number}_preprocessed.txt")
+
+#preprocess_text_file("data/ner_checkdata/ner_test", "data/ner_checkdata/ner_test_preprocessed")

@@ -1,4 +1,5 @@
 import re
+from typing import List, Dict
 
 NAME_MATCHING_REGEX = "{name}(s|i?sche(s|n|r)?)?"
 
@@ -11,7 +12,6 @@ class Composer:
         self.last_name = last_name.capitalize()
         self.geburtsjahr = geburtsjahr
         self.todesjahr = todesjahr
-        self.original_str = original_string
         self.frequencies = {}
         self.__name_match_regex = re.compile(NAME_MATCHING_REGEX.format(name=self.last_name))
         self.__len_last_name = len(self.last_name)
@@ -19,6 +19,8 @@ class Composer:
         self.spotify_popularity = 0
         self.spotify_followers = 0
         self.false_positive_rate = 0
+
+        self.original_string = original_string if original_string else first_name + " " + last_name
 
     def __str__(self):
         return f"Last_Name{self.last_name} FirstName: {self.first_name} {self.geburtsjahr} {self.todesjahr}"
@@ -59,3 +61,67 @@ class Composer:
             self.frequencies[article_key] = self.frequencies[article_key] + 1
         except KeyError:
             self.frequencies[article_key] = 1
+
+    def name_pattern_combinations(self) -> List[List[Dict[str, str]]]:
+        combinations = []
+        # nur nachname
+        pattern = [{"LOWER": self.last_name}]
+        combinations.append(pattern)
+
+        pattern = [{"LOWER": self.last_name + ","}]
+        combinations.append(pattern)
+
+        if not self.first_name:
+            return combinations
+
+        # vornamen
+        vornamen = []
+        for vorname in self.first_name.split():
+            vornamen.append(vorname)
+            pattern = [{"LOWER": name} for name in vornamen] + [{"LOWER": self.last_name}]
+            combinations.append(pattern)
+        # vornamen abkürzungen
+        vornamen = []
+        for vorname in self.first_name.split():
+            vornamen.append(vorname[0])
+
+            # W A Mozart
+            pattern = [{"LOWER": name} for name in vornamen] + [{"LOWER": self.last_name}]
+            combinations.append(pattern)
+
+            # W.A. Mozart
+            pattern = []
+            for name in vornamen:
+                pattern += [{"LOWER": name + "."}]
+
+            pattern += [{"LOWER": self.last_name}]
+            combinations.append(pattern)
+
+            # Mozart, W.A.
+            pattern = [{"LOWER": self.last_name}]
+            for name in vornamen:
+                pattern += [{"LOWER": name + "."}]
+
+            combinations.append(pattern)
+
+        return combinations
+
+
+class Nachname:
+    def __init__(self, name: str):
+        self.name = name
+        self.ref_composers = []
+
+    def match(self, search_str: str):
+        search_str = search_str.strip(".,")
+        name_splitted = search_str.split()
+        second_name = name_splitted[-1]
+        if self.name not in second_name:
+            return False
+
+        for composer in self.ref_composers:
+            if composer.match(search_str) == 0:
+                return True
+
+        return False
+    from Levenshtein import apply_edit
