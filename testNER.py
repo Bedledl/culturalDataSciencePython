@@ -6,7 +6,10 @@ from spacy.tokens import Doc, Span, DocBin
 from spacy.cli.train import train
 
 from Composer import Composer
-from data.ner_checkdata.create_ner_testdata import create_ner_testdata
+from create_ner_testdata import create_ner_testdata
+
+DATA_DIRECTORY = "/mnt/sdb1/cds/data/"
+# https://github.com/explosion/spaCy/blob/v2.3.x/examples/training/train_ner.py
 
 composer_list = [
     Composer("Ludwig van", "Beethoven", 1900, 1900),
@@ -17,7 +20,7 @@ composer_list = [
     Composer("Theodor", "Haydn", 1900, 1900)
 ]
 
-testfiles_ner = [f"data/ner_checkdata/ner_test_ents_{i}" for i in range(1, 8)]
+testfiles_ner = [f"{DATA_DIRECTORY}ner_checkdata/ner_test_ents_{i}" for i in range(1, 8)]
 
 
 def get_testdata_doc(nlp, testdata_annotated: str):
@@ -70,7 +73,7 @@ def test_ner_model(model_path, text_path):
     with open(text_path) as textfile:
         text = textfile.read()
 
-    spans = create_ner_testdata("data/ner_checkdata/check_ner_text_ents.txt")
+    spans = create_ner_testdata(f"{DATA_DIRECTORY}ner_checkdata/check_ner_text_ents.txt")
     check_names = [text[begin:end] for begin, end in spans]
     print(check_names)
 
@@ -83,6 +86,8 @@ def test_ner_model(model_path, text_path):
     print([e.text for e in doc_de.ents if e.label_ == "PER"])
 
 
-train_ner_model(testfiles_ner, "data/ner_checkdata/ner_trained_mult_27_1.spacy")
+train_ner_model(testfiles_ner, f"{DATA_DIRECTORY}ner_checkdata/ner_trained_mult_28_1_de_source.spacy")
 
-#test_ner_model("ner_training/ner_long_trained_model26_1/model-last", "data/ner_checkdata/check_ner_text.txt")
+#test_ner_model("ner_training/ner_trained_model27_1/model-best", "data/ner_checkdata/check_ner_text.txt")
+#print("model last:")
+#test_ner_model("ner_training/ner_trained_model27_1/model-last", "data/ner_checkdata/check_ner_text.txt")
