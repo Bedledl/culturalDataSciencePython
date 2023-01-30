@@ -41,7 +41,6 @@ def get_docs_from_text(nlp, text: str, slice_size: int, slicing_character: str):
 INPUT_FILES = [f"{DATA_DIR}data/extracted_processed_texts/AMZ_wmodel{i}_preprocessed.txt" for i in range(34, 51)]
 
 
-
 def store_docs(input_files: List[str], model: str):
     nlp = spacy.load(model)
 
@@ -50,7 +49,7 @@ def store_docs(input_files: List[str], model: str):
         with open(input_file, "r") as file:
             text = file.read()
 
-        docs = get_docs_from_text(model, text, 200000, "\n\n")
+        docs = get_docs_from_text(nlp, text, 200000, "\n" )
 
         doc = Doc.from_docs(docs, False)
 
