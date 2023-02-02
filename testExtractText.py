@@ -15,7 +15,10 @@ from PyPDF2 import PdfFileReader
 from os.path import isfile
 
 pytesseract.pytesseract.tesseract_cmd = '/home/betti/culturalDataScience/venv/lib/tesseract/tesseract'
-PDF_DATA_DIR = "/home/betti/culturalDataScience/data/raw_pdfs/"
+#PDF_DATA_DIR = "/home/betti/culturalDataScience/data/raw_pdfs/"
+PDF_DATA_DIR = "/mnt/sdb1/cds/data/raw_pdfs/"
+PDF_DATA_DIR_1_51 = "/mnt/sdb1/cds/data/raw_pdfs/raw_pdfs_99_48/"
+EXTRACTED_FILES_DIR = "/mnt/sdb1/cds/data/extracted_texts_63_83/"
 
 class Page:
     def __init__(self, pdf_path, page, label=None, numpy_array=None):
@@ -123,14 +126,14 @@ def store_books(dpi=450, language="deu"):
     def store_booktest_in_file(book):
         print(f"Starting to read and store {book.name} at {datetime.datetime.now()} with {book.pages} Pages")
 
-        textfile = open(book.name + ".txt", 'w')
+        textfile = open(EXTRACTED_FILES_DIR + book.name + ".txt", 'w')
         text = book.get_text_from_whole_book(dpi=dpi, language=language)
         textfile.write(text)
 
         textfile.close()
         print(f"Finished {book.name} at {datetime.datetime.now()}")
 
-    amz_years_from_to = (15, 51)
+    amz_years_from_to = (70, 83)
     books = []
 
     for number in range(*amz_years_from_to):
@@ -159,7 +162,7 @@ def compare_trainings_models():
 
 
 def get_test_page(dpi=93, language="deu"):
-    b = Book(PDF_DATA_DIR + f"amzband1.pdf", f"AMZ1")
+    b = Book(PDF_DATA_DIR_1_51 + f"amzband1.pdf", f"AMZ1")
     print("Generating page :")
     return b.get_text_from_page(203, dpi, language)
 
@@ -197,7 +200,7 @@ def compare_two_mlmodels_for_text():
 store_books(dpi=400, language="amz-weisthuemer-combined")
 
 
-def test_model(model: str):
+def try_test_model(model: str):
     text = get_test_page(400, language=model)
     with open("data/check_data/check_text.txt", "r") as file:
         check_text = file.read()
@@ -211,7 +214,7 @@ def test_model(model: str):
 #print(f"second modell: {test_model('second-test')}")
 #print(f"weistuemer erster versucht: {test_model('weisthuemer1_2_added')}")
 #print(f"weisthuemer auf deu: {test_model('weisthuemer1_2_new')}")
-#print(f"amz-weisthuemer-combined: {test_model('amz-weisthuemer-combined')}")
+#print(f"amz-weisthuemer-combined: {try_test_model('amz-weisthuemer-combined')}")
 
 
 #print(get_test_page(400, language='amz-weisthuemer-combined'))

@@ -14,7 +14,7 @@ class ComposerProps(Enum):
     RELATED_ARTISTS = "related_artists"
 
 
-spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
+#spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials())
 
 
 def get_componist_search_results(conn: Spotify, search_str: str) -> Dict[str, str]:
@@ -39,7 +39,7 @@ def get_composer_props(conn: Spotify, uri: str, props: List[ComposerProps]):
     artist = conn.artist(uri)
 
     for prop in props:
-        if prop == ComposerProps.NAME :
+        if prop == ComposerProps.NAME:
             result[prop] = artist["name"]
         if prop == ComposerProps.FOLLOWERS:
             result[prop] = artist["followers"]["total"]

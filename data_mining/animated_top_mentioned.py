@@ -8,26 +8,31 @@ from data_mining import get_names_most_frequent_mentioned_in_year, get_data_as_d
     get_names_most_frequent_mentioned_overall
 
 color = [
-    "#b96ba2",
-    "#15e24c",
-    "#98aae0",
-    "#d45c08",
-    "#8eb736",
-    "#5511e3",
-    "#b30248",
-    "#82a518",
-    "#46c526",
-    "#288384",
-    "#45cce8",
-    "#f26acd",
-    "#aca82e",
-    "#6f907a",
-    "#69f4e0",
-    "#099438",
-    "#1d6363",
-    "#927bbf",
-    "#02554e"
+    "#FF0000",
+    "#00FF00",
+    "#0000FF",
+    "#FFFF00",
+    "#00FFFF",
+    "#FF00FF",
+    "#C0C0C0",
+    "#808080",
+    "#800000",
+    "#808000",
+    "#008000",
+    "#800080",
+    "#008080",
+    "#FA8072",
+    "#00FA9A",
+    "#6495ED",
+    "#87CEFA",
+    "#FAEBD7",
+    "#D2691E"
 ]
+
+IGNORE_NAMES = [
+    "Don Juan", # Protagonist
+    "GC W Fink", # Verleger
+                ]
 most_frequent_mentioned_names = set() # just names
 
 
@@ -35,16 +40,21 @@ data = get_data_as_data_frame()
 rows = get_rows()
 
 #for year in range(1799, 1849):
-#    most_frequent_mentioned_year = get_names_most_frequent_mentioned_in_year(rows, year, 1)
+#    most_frequent_mentioned_year = get_names_most_frequent_mentioned_in_year(rows, year, 3)
 #    for name in most_frequent_mentioned_year.keys():
 #        most_frequent_mentioned_names.add(name)
 
-most_frequent_mentioned_names = get_names_most_frequent_mentioned_overall(rows, 10)
+most_frequent_mentioned_names = get_names_most_frequent_mentioned_overall(rows, 1000)
 
 print(len(most_frequent_mentioned_names))
 
 print(most_frequent_mentioned_names)
 most_frequent_mentioned_names = list(most_frequent_mentioned_names)
+for i_name in IGNORE_NAMES:
+    try:
+        most_frequent_mentioned_names.remove(i_name)
+    except ValueError:
+        pass
 
 data = data.drop(["book"], axis=1)
 
@@ -58,7 +68,7 @@ data = data.fillna(0)
 
 fig = plt.figure()
 plt.xticks(rotation=45, ha="right", rotation_mode="anchor") #rotate the x-axis values
-plt.subplots_adjust(bottom = 0.2, top = 0.9) #ensuring the dates (on the x-axis) fit in the screen
+plt.subplots_adjust(bottom = 0.1, top = 0.95, left=0.1, right=0.95) #ensuring the dates (on the x-axis) fit in the screen
 plt.ylabel('Erwähnungen')
 plt.xlabel('Year')
 
@@ -67,7 +77,7 @@ def helper_top_frequ_chart(i: int):
     year = 1798 + i
     plt.legend(most_frequent_mentioned_names)
     p = plt.plot(data[:i]) #note it only returns the dataset, up to the point i
-    for i in range(0, 10):
+    for i in range(0, min(len(p), 19)):
         p[i].set_color(color[i]) #set the colour of each curveimport matplotlib.animation as ani
 
 animator = FuncAnimation(fig, helper_top_frequ_chart, interval = 500)

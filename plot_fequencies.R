@@ -1,13 +1,11 @@
 setwd("/home/betti/culturalDataScience")
-data<-read.csv("frequencies1-16.csv")
+data<-read.csv("/home/betti/culturalDataScience/frequency_without_linking/entity_freq_29_1.csv")
 
 library(ggstream)
 library(ggplot2)
 library(dplyr)
 library(EnvStats)
 
-#filter_out <- c("Kreutzer", "Ruhe", "Ernst", "Franz", "Meister", "Geist", "Herz", "Kraft", "Winter", "Grund", "Himmel", "Finger", "Re", "Tod", "Schneider", "Fischer", "Starke", "Gluck", "Bach", "Muller", "Theile")
-filter_out <- c()
 sum_freq <- summarise(group_by(subset.data.frame(data, select = -c(book, year)), name), fre_sum = sum(frequency))
 sum_freq_sort <- sum_freq[order(sum_freq$fre_sum, decreasing = TRUE), ]
 sum_freq_sort_sub <- subset.data.frame(sum_freq_sort, fre_sum > 10 & !(name %in% filter_out), select = name)

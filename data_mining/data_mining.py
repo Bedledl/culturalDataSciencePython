@@ -4,7 +4,7 @@ import pandas as pd
 import functools
 from typing import Dict
 
-CSV_FILE = "../frequency_without_linking/entity_freq_29_1.csv"
+CSV_FILE = "../frequency_without_linking/entity_freq_30_1_kveld.csv"
 
 
 def get_data_as_data_frame() -> pd.DataFrame:
@@ -52,9 +52,11 @@ def get_names_most_frequent_mentioned(frequency_dict_sorted: Dict[str, int], n: 
     return_dict = {}
     for i, items in enumerate(frequency_dict_sorted.items()):
         if i == n:
-            return return_dict
+            break
 
         return_dict[items[0]] = items[1]
+
+    return return_dict
 
 
 def get_names_most_frequent_mentioned_in_year(data, year, n):

@@ -66,9 +66,12 @@ def create_frequency_dict(input_doc_file: str, composers: List[Composer]):
     return freq_dict
 
 
-with open(COMPOSER_FILE, "rb") as file:
-    composers = pickle.load(file)
+def get_composers():
+    with open(COMPOSER_FILE, "rb") as file:
+        composers = pickle.load(file)
+    return composers
 
+"""
 header = ["name", "book", "year", "frequency"]
 
 csv_file = open("entity_freq_29_1.csv", "w")
@@ -85,4 +88,4 @@ for i in range(1, 3):
         csv_writer.writerow([name, "AMZ" + str(year + i), str(year + i), freq])
 
 csv_file.close()
-
+"""

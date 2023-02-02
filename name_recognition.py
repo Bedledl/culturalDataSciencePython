@@ -38,7 +38,7 @@ def get_docs_from_text(nlp, text: str, slice_size: int, slicing_character: str):
     return docs
 
 
-INPUT_FILES = [f"{DATA_DIR}data/extracted_processed_texts/AMZ_wmodel{i}_preprocessed.txt" for i in range(34, 51)]
+INPUT_FILES = [f"{DATA_DIR}data/extracted_processed_texts/AMZ_wmodel{i}_preprocessed.txt" for i in range(63, 83)]
 
 
 def store_docs(input_files: List[str], model: str):

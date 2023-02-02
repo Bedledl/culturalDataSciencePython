@@ -43,7 +43,7 @@ def preprocess_text_file(input_text_file, output_text_file):
             file.write(text)
 
 
-for number in range(1, 51):
-    preprocess_text_file(f"AMZ_wmodel{number}.txt", f"AMZ_wmodel{number}_preprocessed.txt")
+for number in range(63, 83):
+    preprocess_text_file(f"/mnt/sdb1/cds/data/extracted_texts_63_83/AMZ_wmodel{number}.txt", f"/mnt/sdb1/cds/data/extracted_processed_texts/AMZ_wmodel{number}_preprocessed.txt")
 
 #preprocess_text_file("data/ner_checkdata/ner_test", "data/ner_checkdata/ner_test_preprocessed")
