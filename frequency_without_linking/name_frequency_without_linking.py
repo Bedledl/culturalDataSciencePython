@@ -285,14 +285,14 @@ def get_search_tree():
     # for i in range(1, 51):
     names_dict = {}
     year = 1799
-#    for i in range(1, 51):
-    for i in range(1, 5):
+    for i in range(1, 51):
+#    for i in range(1, 5):
         file_name_dat = f"/mnt/sdb1/cds/data/entities_files/AMZ_wmodel{i}.dat"
         names_dict = get_persons_from_doc(f"AMZ{year}", file_name_dat, year, names_dict)
         year += 1
 
-#    for i in range(63, 83):
-    for i in range(63, 67):
+    for i in range(63, 83):
+#    for i in range(63, 67):
         file_name_dat = f"/mnt/sdb1/cds/data/entities_files/AMZ_wmodel{i}.dat"
         names_dict = get_persons_from_doc(f"AMZ{i}", file_name_dat, 1800 + i, names_dict)
         year += 1

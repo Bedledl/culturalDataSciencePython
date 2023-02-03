@@ -4,7 +4,7 @@ import pandas as pd
 import functools
 from typing import Dict
 
-CSV_FILE = "../frequency_without_linking/entity_freq_30_1_kveld.csv"
+CSV_FILE = "../frequency_without_linking/entity_freq_1_2_whole.csv"
 
 
 def get_data_as_data_frame() -> pd.DataFrame:
