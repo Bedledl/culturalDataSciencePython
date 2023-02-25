@@ -11,7 +11,7 @@ from numpy import mean, median, sqrt
 from spotipy import SpotifyClientCredentials
 
 from data_mining import get_names_most_frequent_mentioned_in_year, get_data_as_data_frame, get_rows, \
-    get_names_most_frequent_mentioned_overall
+    get_names_most_frequent_mentioned_overall, REL_FREQ_CSV_FILE
 from helper import unidecode_except_german_umlaute
 from spotifyProxy import get_componist_search_results, get_composer_props, ComposerProps
 
@@ -42,8 +42,8 @@ IGNORE_NAMES = [
     "GC W Fink", # Verleger
                 ]
 
-data = get_data_as_data_frame()
-rows = get_rows()
+data = get_data_as_data_frame(REL_FREQ_CSV_FILE)
+rows = get_rows(REL_FREQ_CSV_FILE)
 
 #for year in range(1799, 1849):
 #    most_frequent_mentioned_year = get_names_most_frequent_mentioned_in_year(rows, year, 3)
@@ -52,7 +52,8 @@ rows = get_rows()
 
 # es gibt insgesamt 20974
 
-most_frequent_mentioned_names = {name: freq for name, freq in get_names_most_frequent_mentioned_overall(rows, 20100).items() if freq > 1}
+most_frequent_mentioned_names = {name: freq for name, freq in get_names_most_frequent_mentioned_overall(rows, 1000).items()}
+
 
 for i_name in IGNORE_NAMES:
     try:
@@ -104,8 +105,25 @@ conn = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id="e0f913cf
                                                              client_secret="0c4754573c64405ead446f0acd861650"))
 
 print("Connected:)")
-conn.search("hallo")
+result = conn.search("Georg Joseph Vogler", type="artist")["artists"]["items"][0]
+print(result)
+r_uri, r_name = result["uri"], result["name"]
+print(r_name)
+props = get_composer_props(conn, r_uri,
+                                       [ComposerProps.POPULARITY])
+spotify_popularity = props[ComposerProps.POPULARITY]
+print(spotify_popularity)
 print("now")
+
+
+def get_nachname(name):
+    split = name.split()
+    return split[-1]
+
+
+popularity_dif = {}
+
+
 for name, popularity in popularity_dict.items():
     if popularity < 20:
         continue
@@ -114,11 +132,16 @@ for name, popularity in popularity_dict.items():
         results = get_componist_search_results(conn, name)
     except TimeoutError:
         print(f"Timeout Error for {name}")
+    if len(results) == 0:
+        print(f"Keine Ergebnisse(amz popularity {popularity}): {name}")
     for result_uri, result_name in results.items():
-        if unidecode_except_german_umlaute(result_name.lower()) \
-                == unidecode_except_german_umlaute(name.lower()):
+        if unidecode_except_german_umlaute(get_nachname(result_name).lower()) \
+                == unidecode_except_german_umlaute(get_nachname(name.lower())):
             props = get_composer_props(conn, result_uri,
                                        [ComposerProps.POPULARITY])
             spotify_popularity = props[ComposerProps.POPULARITY]
-            print(f"{name}: amz popularity: {popularity} vs. spotify popularity {spotify_popularity}")
+            print(f"{name}, {result_name}: amz popularity: {popularity} vs. spotify popularity {spotify_popularity}")
+            popularity_dif[name] = popularity - spotify_popularity
+            break
 
+print(sorted(popularity_dif.items(), key=lambda x: x[1]))

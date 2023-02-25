@@ -43,7 +43,7 @@ rows = get_rows()
 #    most_frequent_mentioned_year = get_names_most_frequent_mentioned_in_year(rows, year, 3)
 #    for name in most_frequent_mentioned_year.keys():
 #        most_frequent_mentioned_names.add(name)
-
+"""
 most_frequent_mentioned_names = get_names_most_frequent_mentioned_overall(rows, 1000)
 
 print(len(most_frequent_mentioned_names))
@@ -55,7 +55,14 @@ for i_name in IGNORE_NAMES:
         most_frequent_mentioned_names.remove(i_name)
     except ValueError:
         pass
-
+"""
+most_frequent_mentioned_names = [
+    "Johann Sebastian Bach",
+    "W A Oarert Mozart",
+    "SINFONIEN Beethoven",
+    "Joseph I Haydn",
+    "Dr Klara Schumann"
+]
 data = data.drop(["book"], axis=1)
 
 #data.index = data["year"]

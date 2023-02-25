@@ -15,19 +15,20 @@ IGNORE_NAMES = [
     "Don Juan", # Protagonist
     "GC W Fink", # Verleger
                 ]
+IGNORE_NAMES =[]
 
-data = get_data_as_data_frame()
-rows = get_rows()
+data = get_data_as_data_frame("../frequency_without_linking/rel_freq_6_2.csv")
+rows = get_rows("../frequency_without_linking/rel_freq_6_2.csv")
 
 most_frequent_mentioned_names = set()
 
 for year in range(1799, 1849):
-    most_frequent_mentioned_year = get_names_most_frequent_mentioned_in_year(rows, year, 25)
+    most_frequent_mentioned_year = get_names_most_frequent_mentioned_in_year(rows, year, 50)
     for name in most_frequent_mentioned_year.keys():
         most_frequent_mentioned_names.add(name)
 
 for year in range(1863, 1883):
-    most_frequent_mentioned_year = get_names_most_frequent_mentioned_in_year(rows, year, 25)
+    most_frequent_mentioned_year = get_names_most_frequent_mentioned_in_year(rows, year, 50)
     for name in most_frequent_mentioned_year.keys():
         most_frequent_mentioned_names.add(name)
 
@@ -59,12 +60,39 @@ row_labels = [r[0] for r in record_with_index]
 
 #record = numpy.array([[math.log2(x) if x > 1 else x for x in row] for row in record])
 #record = numpy.array([[x/sum(row) * 1000 for x in row] for row in record])
+# mache werte relativ zu allen nennungen in einem Jahr
 record = numpy.array([[x/sum(row) * 1000 for i, x in enumerate(row)] for row in record])
 
 
-clustering = AgglomerativeClustering(n_clusters=10, affinity='cosine',
+# jetzt glätten wir die werte noch ein wenig.
+# es wird exponentielles glätten benutzt um neuere Werte stärker in die Glättung miteinzubeziehen
+
+def exp_smoothing(x_orig, pre_x, alpha):
+    return alpha * x_orig + (1- alpha) * pre_x
+
+for row in record:
+    print(row[0])
+
+# logarithmisches glätten
+
+for row_nr, row in enumerate(record):
+    for i in range(len(row)):
+        record[row_nr][i] = math.log2(record[row_nr][i]) if record[row_nr][i] > 1 else 0
+
+#exponentielle glättung
+for row_nr, row in enumerate(record):
+    if row_nr == 0:
+        continue
+
+    for i in range(len(row)):
+        record[row_nr][i] = exp_smoothing(record[row_nr][i], record[row_nr - 1][i], 0.2)
+
+for row in record:
+    print(row[0])
+
+clustering = AgglomerativeClustering(n_clusters=4, affinity='cosine',
                         memory=None, connectivity=None, compute_full_tree='auto',
-                        linkage='single', distance_threshold=None, compute_distances=False)
+                        linkage='complete', distance_threshold=None, compute_distances=False)
 
 #clustering.labels_ = row_labels
 #print(clustering.labels_)
