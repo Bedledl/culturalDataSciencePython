@@ -78,11 +78,6 @@ class Book:
         p = Page(self.__pdf_path, page_nr)
         return p.generate_text_tesseract(dpi, language)
 
-    def get_text_from_page_optimized(self, page_nr, dpi=93, language="deu"):
-        p = Page(self.__pdf_path, page_nr)
-#        p.binarization_threshold()
-        return p.generate_text_tesseract(language)
-
     def get_text_from_pages(self, start, end, dpi=400, language="deu"):
         images = pdf2image.convert_from_path(self.__pdf_path,
                                              dpi=dpi,
@@ -122,7 +117,7 @@ class Book:
         return text
 
 
-def store_books(dpi=450, language="deu"):
+def store_books(from_nr: int, to_nr: int, dpi=450, language="deu"):
     def store_booktest_in_file(book):
         print(f"Starting to read and store {book.name} at {datetime.datetime.now()} with {book.pages} Pages")
 
@@ -133,10 +128,9 @@ def store_books(dpi=450, language="deu"):
         textfile.close()
         print(f"Finished {book.name} at {datetime.datetime.now()}")
 
-    amz_years_from_to = (70, 83)
     books = []
 
-    for number in range(*amz_years_from_to):
+    for number in range(from_nr, to_nr):
         b = Book(PDF_DATA_DIR + f"amzband{number}.pdf", f"AMZ_wmodel{number}")
         books.append(b)
 
@@ -197,7 +191,7 @@ def compare_two_mlmodels_for_text():
         print(l1 + fill_up1 + l2 + fill_up2)
 
 #compare_two_mlmodels_for_text()
-store_books(dpi=400, language="amz-weisthuemer-combined")
+#store_books(dpi=400, language="amz-weisthuemer-combined")
 
 
 def try_test_model(model: str):
@@ -207,7 +201,7 @@ def try_test_model(model: str):
 
     return ratio(text, check_text)
 
-#print(f"deu modell: {test_model('deu')}")
+#print(f"deu modell: {try_test_model('deu')}")
 #print(f"amztrained2 modell: {test_model('amz-trained2')}")
 #print(f"amztrained modell: {test_model('amz-trained')}")
 #print(f"first modell: {test_model('first-test')}")
@@ -218,7 +212,7 @@ def try_test_model(model: str):
 
 
 #print(get_test_page(400, language='amz-weisthuemer-combined'))
-
+print(get_test_page(400, language='deu'))
 
 # weisthuemer1-2 added: erster versucht weisthumer auf amz-trained zu adden
 #amztrained ist das beste aus deu amztrained, maztrained2, first und second test
